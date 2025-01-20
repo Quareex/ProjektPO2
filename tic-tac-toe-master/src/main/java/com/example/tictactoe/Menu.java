@@ -11,22 +11,23 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Menu extends Application {
     private static final String SERVER_ADDRESS = "localhost";
-    private static final int SERVER_PORT = 8080;
+    private static final int SERVER_PORT = 12345;
 
     private static Menu instance;  // Instancja klasy Menu
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
-    private volatile boolean isConnected = false;
+    private boolean isConnected;
 
     @Override
     public void start(Stage stage) throws IOException {
+        instance = this;
         FXMLLoader loader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
         Scene scene = new Scene(loader.load());
-
         stage.setTitle("Kółko i krzyżyk");
         stage.setScene(scene);
 
@@ -36,18 +37,16 @@ public class Menu extends Application {
         });
 
         stage.show();
+        connect();
 
-        new Thread(() -> {
-            try {
-                connect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
+
+
+
+
     }
 
-    public void connect() throws IOException {
-        new Thread(() -> {
+    public void connect(){
+
             try {
                 System.out.println("Próbuję połączyć z serwerem...");
                 socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
@@ -64,7 +63,10 @@ public class Menu extends Application {
 
                 System.out.println(in.readLine());
 
-            } catch (IOException e) {
+            }catch(SocketException e) {
+                System.out.println("Coś poszło nie tak z socketem: " + e.getMessage());
+            }
+            catch (IOException e) {
                 System.out.println("Błąd połączenia z serwerem: " + e.getMessage());
                 setConnected(false);
 
@@ -72,7 +74,6 @@ public class Menu extends Application {
                     System.out.println("Błąd połączenia z serwerem.");
                 });
             }
-        }).start();
     }
 
 
@@ -88,9 +89,6 @@ public class Menu extends Application {
     }
 
     public static Menu getInstance() {
-        if (instance == null) {
-            instance = new Menu();
-        }
         return instance;
     }
 
@@ -98,11 +96,11 @@ public class Menu extends Application {
         return out;
     }
 
-    public synchronized boolean isConnected() {
+    public boolean isConnected() {
         return isConnected;
     }
 
-    public synchronized void setConnected(boolean connected) {
+    public void setConnected(boolean connected) {
         isConnected = connected;
     }
 

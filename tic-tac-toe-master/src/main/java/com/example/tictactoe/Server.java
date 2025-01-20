@@ -6,7 +6,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Server {
-    private static final int PORT = 8080;
+    private static final int PORT = 12345;
     private static final int MAX_CLIENTS = 2;
 
     private static final AtomicInteger clientCounter = new AtomicInteger(1);
@@ -17,7 +17,7 @@ public class Server {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Serwer nasłuchuje na porcie " + PORT);
 
-            while (true) {
+            while(true) {
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("Połączono z klientem: " + clientSocket.getInetAddress());
 
