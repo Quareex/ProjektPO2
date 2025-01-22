@@ -39,14 +39,9 @@ public class Menu extends Application {
         stage.show();
         connect();
 
-
-
-
-
     }
 
     public void connect(){
-
             try {
                 System.out.println("Próbuję połączyć z serwerem...");
                 socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
@@ -115,6 +110,10 @@ public class Menu extends Application {
         } else {
             System.out.println("Połączenie z serwerem nie zostało jeszcze nawiązane.");
         }
+    }
+
+    public BufferedReader getInReader() {
+        return in;
     }
 
     public static void main(String[] args) {
